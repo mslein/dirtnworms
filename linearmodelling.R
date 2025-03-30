@@ -63,9 +63,7 @@ ev %>%
   theme_classic()
 
 
-# here's i'll make a new figure 
-
-#la di da 
-
+<<<<<<< HEAD
+>>>>>>> 
 
 
