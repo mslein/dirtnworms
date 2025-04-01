@@ -40,7 +40,7 @@ confint.merMod(mnb1, method="Wald")
 overdisp_fun(mnb1) #not overdispersed:)
 
 #using the negative binomial and back transforming the estimates:)
-backtransformed_turb<- emmeans(mnb1, ~ trt + tube_diameter_cm, type = "response") %>% as.data.frame()
+backtransformed_turb<- emmeans(mnb1, ~ trt + tube_diameter_cm, type = "response", adjust="bonferroni", level=0.95) %>% as.data.frame()
 
 ############# Alex's data ###########
 #looking at reemergence time
@@ -55,7 +55,7 @@ mnb2 <- glmer.nb(emerge_s ~ temp_trt*light_trt + tube_diameter_cm + (1 | trial),
 summary(mnb2)
 confint.merMod(mnb2, method="Wald")
 overdisp_fun(mnb2) #less overdispersed
-backtransformed_ev_rem<- emmeans(mnb2, ~ temp_trt*light_trt + tube_diameter_cm , type = "response") %>%
+backtransformed_ev_rem<- emmeans(mnb2, ~ temp_trt*light_trt + tube_diameter_cm , type = "response", adjust="bonferroni", level=0.95) %>%
   as.data.frame() %>%
   mutate(trt_comb =str_c(temp_trt, light_trt))
 
@@ -72,10 +72,10 @@ mnb3 <- glmer.nb(retract_s ~ temp_trt*light_trt + tube_diameter_cm + (1 | trial)
 summary(mnb3)
 overdisp_fun(mnb3) # a little over dispersed
 #using the negative binomial and back transforming the estimates:)
-backtransformed_ev_ret<- emmeans(mnb3, ~ temp_trt*light_trt + tube_diameter_cm , type = "response") %>%
+backtransformed_ev_ret<- emmeans(mnb3, ~ temp_trt*light_trt + tube_diameter_cm , type = "response", adjust="bonferroni", level=0.95) %>%
   as.data.frame() %>%
   mutate(trt_comb =str_c(temp_trt, light_trt))
-
+confint(backtransformed_ev_ret, adjust = "bonferroni", level = 0.95)
 ####### visualizing data ###############
 
 p1 <- ggplot()+
