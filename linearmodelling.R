@@ -75,14 +75,15 @@ overdisp_fun(mnb3) # a little over dispersed
 backtransformed_ev_ret<- emmeans(mnb3, ~ temp_trt*light_trt + tube_diameter_cm , type = "response", adjust="bonferroni", level=0.95) %>%
   as.data.frame() %>%
   mutate(trt_comb =str_c(temp_trt, light_trt))
-confint(backtransformed_ev_ret, adjust = "bonferroni", level = 0.95) #angry on my laptop??
+confint(backtransformed_ev_ret, adjust = "bonferroni", level = 0.95) #angry??
 
 ## this works on my laptop ?? ###
 
-backtransformed_ev_ret1 <- emmeans(mnb3, ~temp_trt*light_trt + tube_diameter_cm, type = "response", adjust="bonferroni", level = 0.95) %>%
+backtransformed_ev_ret1 <- emmeans(mnb3, ~temp_trt*light_trt + tube_diameter_cm, type = "response", adjust="bonferroni", level = 0.95)
+
+backtransformed_ev_ret1_df <- confint(backtransformed_ev_ret1, adjust = "bonferroni", level = 0.95) %>%
+  as.data.frame() %>%
   mutate(trt_comb = str_c(temp_trt, light_trt))
-confint(backtransformed_ev_ret1, adjust = "bonferroni", level = 0.95)
-backtransformed_ev_ret1_df <- as.data.frame(backtransformed_ev_ret1)
 ####### visualizing data ###############
 
 p1 <- ggplot()+
@@ -90,7 +91,7 @@ p1 <- ggplot()+
   #geom_violin(data=turb, aes(x=trt, y=CR_CE_time, colour=trt), alpha=0.03)+
   geom_pointrange(data=backtransformed_turb, aes(x=trt, y=response, ymin=asymp.LCL, ymax=asymp.UCL, colour=trt), size=0.75)+
   scale_colour_manual(values = c("snow3", "snow4", "grey30"), breaks=c("control", "moderate  sediment", "high sediment"))+
-  scale_x_discrete(limits=c("control", "moderate  sediment", "high sediment"))+
+  scale_x_discrete(limits=c("control", "moderate sediment", "high sediment"))+
   coord_flip()+
   theme_classic()+
   ylab("Re-emergence time (s)")+
@@ -104,7 +105,7 @@ p1 <- ggplot()+
                                                      ymax=asymp.UCL, colour=trt_comb),
                     position = position_dodge(width = 0.75), size=0.75)+
     scale_colour_manual(values = c("black", "grey30","snow4", "snow3"))+
-    #scale_x_discrete(limits=c("control", "moderate  sediment", "high sediment"))+
+    #scale_x_discrete(limits=c("control", "moderate sediment", "high sediment"))+
     coord_flip()+
     theme_classic()+
     ylab("Re-emergence time (s)")+
@@ -120,7 +121,7 @@ p1 <- ggplot()+
                                                      ymax=asymp.UCL, colour=trt_comb),
                     position = position_dodge(width = 0.75))+
     scale_colour_manual(values = c("black", "grey30","snow4", "snow3"))+
-    #scale_x_discrete(limits=c("control", "moderate  sediment", "high sediment"))+
+    #scale_x_discrete(limits=c("control", "moderate sediment", "high sediment"))+
     coord_flip()+
     theme_classic()+
     ylab("Retraction time (s)")+
