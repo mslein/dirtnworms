@@ -77,7 +77,7 @@ backtransformed_ev_ret<- emmeans(mnb3, ~ temp_trt*light_trt + tube_diameter_cm ,
   mutate(trt_comb =str_c(temp_trt, light_trt))
 confint(backtransformed_ev_ret, adjust = "bonferroni", level = 0.95) #angry??
 
-## this works on my laptop ?? ###
+## this works?? ###
 
 backtransformed_ev_ret1 <- emmeans(mnb3, ~temp_trt*light_trt + tube_diameter_cm, type = "response", adjust="bonferroni", level = 0.95)
 
