@@ -75,7 +75,14 @@ overdisp_fun(mnb3) # a little over dispersed
 backtransformed_ev_ret<- emmeans(mnb3, ~ temp_trt*light_trt + tube_diameter_cm , type = "response", adjust="bonferroni", level=0.95) %>%
   as.data.frame() %>%
   mutate(trt_comb =str_c(temp_trt, light_trt))
-confint(backtransformed_ev_ret, adjust = "bonferroni", level = 0.95)
+confint(backtransformed_ev_ret, adjust = "bonferroni", level = 0.95) #angry on my laptop??
+
+## this works on my laptop ?? ###
+
+backtransformed_ev_ret1 <- emmeans(mnb3, ~temp_trt*light_trt + tube_diameter_cm, type = "response", adjust="bonferroni", level = 0.95) %>%
+  mutate(trt_comb = str_c(temp_trt, light_trt))
+confint(backtransformed_ev_ret1, adjust = "bonferroni", level = 0.95)
+backtransformed_ev_ret1_df <- as.data.frame(backtransformed_ev_ret1)
 ####### visualizing data ###############
 
 p1 <- ggplot()+
