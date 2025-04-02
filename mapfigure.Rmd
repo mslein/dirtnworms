@@ -1,0 +1,33 @@
+---
+title: "map_figures"
+author: "Lynndsay Terpsma"
+date: "2025-04-02"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(leaflet)
+```
+
+```{r}
+samplelocations <- data.frame(
+  name = c("Bamfield Marine Science Centre", "BMSC South Dock", "West Government Dock", "Island Health Dock"),
+  lat = c(48.83535, 48.833394, 48.828944, 48.827150),
+  lon = c(-125.13463, -125.136765, -125.139980, -125.137254),
+  direction = c("right", "right", "left", "right")
+)
+```
+
+
+```{r}
+leaflet(data = samplelocations) %>%
+  addTiles() %>%
+  addProviderTiles(providers$CartoDB.Positron) %>%
+  addMarkers(~lon, ~lat, label = ~name, labelOptions = ~labelOptions(noHide = TRUE, direction = direction, textOnly = TRUE, style = list("color" = "black", "font-weight" = "bold", "background" = "white", "padding" = "3px", "border-radius" = "5px")))
+```
+
+
+
+
