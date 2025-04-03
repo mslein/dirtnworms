@@ -104,7 +104,16 @@ map <- leaflet() %>%
   addMarkers(
     lng = -125.152, lat = 48.83798,
     icon = compassicon) %>%
-  setView(lng = -125.13806, lat = 48.83117, zoom = 15)
+  setView(lng = -125.13806, lat = 48.83117, zoom = 15) %>%
+  addScaleBar(
+    map,
+    position = "topright"
+  )
+scaleBarOptions(
+  maxWidth = 100,
+  metric = TRUE,
+  updateWhenIdle = TRUE
+)
 map
 ```
 
