@@ -9,24 +9,94 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(leaflet)
+library(htmltools)
 ```
 
 ```{r}
 samplelocations <- data.frame(
   name = c("Bamfield Marine Science Centre", "BMSC South Dock", "West Government Dock", "Island Health Dock"),
   lat = c(48.83535, 48.833394, 48.828944, 48.827150),
-  lon = c(-125.13463, -125.136765, -125.139980, -125.137254),
-  direction = c("right", "right", "left", "right")
+  lon = c(-125.13463, -125.136765, -125.139980, -125.137254)
 )
 ```
 
+```{r}
+iconbmsc <- awesomeIcons(
+  icon = "map-marker",
+  iconColor = "white",
+  library = "fa", 
+  markerColor = "red")
+
+iconbmscdock <- awesomeIcons(
+  icon = "transparent",
+  iconColor = "transparent",
+  library = "fa",
+  markerColor = "blue")
+
+iconwestgov <- awesomeIcons(
+  icon = "map-marker",
+  iconColor = "white",
+  library = "fa",
+  markerColor = "blue")
+
+iconhealth <- awesomeIcons(
+  icon = "map-marker",
+  iconColor = "white",
+  library = "fa",
+  markerColor = "blue")
+```
+
+
 
 ```{r}
-leaflet(data = samplelocations) %>%
+leaflet() %>%
   addTiles() %>%
-  addProviderTiles(providers$CartoDB.Positron) %>%
-  addMarkers(~lon, ~lat, label = ~name, labelOptions = ~labelOptions(noHide = TRUE, direction = direction, textOnly = TRUE, style = list("color" = "black", "font-weight" = "bold", "background" = "white", "padding" = "3px", "border-radius" = "5px")))
+  addProviderTiles(providers$CartoDB.PositronNoLabels) %>%
+  addAwesomeMarkers(
+    lng = -125.13463, lat = 48.83535,
+    label = "Bamfield Marine Science Centre",
+    icon = iconbmscdock,
+    labelOptions = labelOptions(noHide = TRUE, textOnly = TRUE, direction = "right", 
+                                style = list( 
+                                  "color" = "black",
+                                  "font-weight" = "bold",
+                                  "font-size" = "10px", 
+                                  "background" = "white",
+                                  "padding" = "3px", 
+                                  "border-radius" = "5px"
+                                  ))) %>%
+  addAwesomeMarkers(
+    lng = -125.136765, lat = 48.833394,
+    label = "BMSC South Dock",
+    icon = iconbmscdock,
+    labelOptions = labelOptions(noHide = TRUE, direction = "right",
+                                style = list( 
+                                  "color" = "black",
+                                  "font-weight" = "bold",
+                                  "font-size" = "10px", 
+                                  "background" = "white"))) %>%
+  addAwesomeMarkers(
+      lng = -125.139980, lat = 48.828944,
+      label = "West Government Dock",
+      icon = iconwestgov,
+      labelOptions = labelOptions(noHide = TRUE, direction = "left",
+                                  style = list( 
+                                  "color" = "black",
+                                  "font-weight" = "bold",
+                                  "font-size" = "10px", 
+                                  "background" = "white"))) %>%
+  addAwesomeMarkers(
+      lng = -125.137254, lat = 48.827150,
+      label = "Island Health Dock",
+      icon = iconhealth,
+      labelOptions = labelOptions(noHide = TRUE, direction = "right",
+                                  style = list( 
+                                  "color" = "black",
+                                  "font-weight" = "bold",
+                                  "font-size" = "10px", 
+                                  "background" = "white")))
 ```
+
 
 
 
