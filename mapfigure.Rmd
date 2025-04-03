@@ -109,7 +109,7 @@ map
 ```
 
 ```{r}
-mapshot(map, file = "mapfigure_a.png")
+mapshot(map, file = "mapfigure_zoomedin.png")
 ```
 
 
@@ -135,7 +135,7 @@ map2
 ```
 
 ```{r}
-mapshot(map2, file = "mapfigure2.png")
+mapshot(map2, file = "mapfigure_zoomedout.png")
 ```
 
 
