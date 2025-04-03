@@ -9,7 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(leaflet)
-library(htmltools)
+library(mapview)
 ```
 
 ```{r}
@@ -22,40 +22,39 @@ samplelocations <- data.frame(
 
 ```{r}
 iconbmsc <- awesomeIcons(
-  icon = "map-marker",
-  iconColor = "white",
-  library = "fa", 
-  markerColor = "red")
+  icon = "circle",
+  iconColor = '#FFFFFF',
+  library = "fa",
+  markerColor = "black")
 
 iconbmscdock <- awesomeIcons(
-  icon = "transparent",
-  iconColor = "transparent",
+  icon = "circle",
+  iconColor = '#FFFFFF',
   library = "fa",
-  markerColor = "blue")
+  markerColor = "red")
 
 iconwestgov <- awesomeIcons(
-  icon = "map-marker",
-  iconColor = "white",
+  icon = "circle",
+  iconColor = "#FFFFFF",
   library = "fa",
-  markerColor = "blue")
+  markerColor = "red")
 
 iconhealth <- awesomeIcons(
-  icon = "map-marker",
-  iconColor = "white",
+  icon = "circle",
+  iconColor = "#FFFFFF",
   library = "fa",
-  markerColor = "blue")
+  markerColor = "red")
 ```
 
 
 
 ```{r}
-leaflet() %>%
+map <- leaflet() %>%
   addTiles() %>%
-  addProviderTiles(providers$CartoDB.PositronNoLabels) %>%
-  addAwesomeMarkers(
-    lng = -125.13463, lat = 48.83535,
-    label = "Bamfield Marine Science Centre",
-    icon = iconbmscdock,
+  addProviderTiles(providers$CartoDB.Positron) %>%
+  addLabelOnlyMarkers(
+    lng = -125.1346, lat = 48.83552,
+    label = HTML("Bamfield Marine<br>Science Centre"),
     labelOptions = labelOptions(noHide = TRUE, textOnly = TRUE, direction = "right", 
                                 style = list( 
                                   "color" = "black",
@@ -66,7 +65,10 @@ leaflet() %>%
                                   "border-radius" = "5px"
                                   ))) %>%
   addAwesomeMarkers(
-    lng = -125.136765, lat = 48.833394,
+    lng = -125.13543, lat = 48.83552,
+    icon = iconbmsc) %>%
+  addAwesomeMarkers(
+    lng = -125.13674, lat = 48.83326,
     label = "BMSC South Dock",
     icon = iconbmscdock,
     labelOptions = labelOptions(noHide = TRUE, direction = "right",
@@ -74,9 +76,11 @@ leaflet() %>%
                                   "color" = "black",
                                   "font-weight" = "bold",
                                   "font-size" = "10px", 
-                                  "background" = "white"))) %>%
+                                  "background" = "white",
+                                  "padding" = "3px", 
+                                  "border-radius" = "5px"))) %>%
   addAwesomeMarkers(
-      lng = -125.139980, lat = 48.828944,
+      lng = -125.13988, lat = 48.82896,
       label = "West Government Dock",
       icon = iconwestgov,
       labelOptions = labelOptions(noHide = TRUE, direction = "left",
@@ -84,9 +88,11 @@ leaflet() %>%
                                   "color" = "black",
                                   "font-weight" = "bold",
                                   "font-size" = "10px", 
-                                  "background" = "white"))) %>%
+                                  "background" = "white",
+                                  "padding" = "3px", 
+                                  "border-radius" = "5px"))) %>%
   addAwesomeMarkers(
-      lng = -125.137254, lat = 48.827150,
+      lng = -125.13719, lat = 48.82711,
       label = "Island Health Dock",
       icon = iconhealth,
       labelOptions = labelOptions(noHide = TRUE, direction = "right",
@@ -94,10 +100,41 @@ leaflet() %>%
                                   "color" = "black",
                                   "font-weight" = "bold",
                                   "font-size" = "10px", 
-                                  "background" = "white")))
+                                  "background" = "white",
+                                  "padding" = "3px", 
+                                  "border-radius" = "5px"))) %>%
+  setView(lng = -125.13806, lat = 48.83117, zoom = 15)
+map
+```
+
+```{r}
+mapshot(map, file = "mapfigure_a.png")
 ```
 
 
 
+```{r}
+map2 <- leaflet() %>%
+  addTiles() %>%
+  addProviderTiles(providers$CartoDB.Positron) %>%
+  addAwesomeMarkers(
+      lng = -125.13543, lat = 48.83552,
+      icon = iconbmsc,
+      label = "Bamfield Marine Science Centre",
+      labelOptions = labelOptions(noHide = TRUE, direction = "left",
+                                  style = list( 
+                                  "color" = "black",
+                                  "font-weight" = "bold",
+                                  "font-size" = "10px", 
+                                  "background" = "white",
+                                  "padding" = "3px", 
+                                  "border-radius" = "5px"))) %>%
+  setView(lng = -123.53238, lat = 49.05492, zoom = 7)
+map2
+```
+
+```{r}
+mapshot(map2, file = "mapfigure2.png")
+```
 
 
