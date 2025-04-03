@@ -10,14 +10,8 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(leaflet)
 library(mapview)
-```
-
-```{r}
-samplelocations <- data.frame(
-  name = c("Bamfield Marine Science Centre", "BMSC South Dock", "West Government Dock", "Island Health Dock"),
-  lat = c(48.83535, 48.833394, 48.828944, 48.827150),
-  lon = c(-125.13463, -125.136765, -125.139980, -125.137254)
-)
+library(htmltools)
+library(leaflet.extras)
 ```
 
 ```{r}
@@ -44,8 +38,12 @@ iconhealth <- awesomeIcons(
   iconColor = "#FFFFFF",
   library = "fa",
   markerColor = "red")
-```
 
+compassicon <- makeIcon(
+  iconUrl = "https://freesvg.org/img/CompassRose.png",
+  iconWidth = 100, iconHeight = 100
+)
+```
 
 
 ```{r}
@@ -103,6 +101,9 @@ map <- leaflet() %>%
                                   "background" = "white",
                                   "padding" = "3px", 
                                   "border-radius" = "5px"))) %>%
+  addMarkers(
+    lng = -125.152, lat = 48.83798,
+    icon = compassicon) %>%
   setView(lng = -125.13806, lat = 48.83117, zoom = 15)
 map
 ```
