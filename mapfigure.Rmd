@@ -5,6 +5,9 @@ date: "2025-04-02"
 output: html_document
 ---
 
+
+## Interactive Map with Leaflet ##
+ 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
@@ -101,10 +104,6 @@ map <- leaflet() %>%
                                   "background" = "white",
                                   "padding" = "3px", 
                                   "border-radius" = "5px"))) %>%
-  addMarkers(
-    lng = -125.152, lat = 48.83798,
-    icon = compassicon) %>%
-  setView(lng = -125.13806, lat = 48.83117, zoom = 15) %>%
   addScaleBar(
     map,
     position = "topright"
@@ -120,7 +119,6 @@ map
 ```{r}
 mapshot(map, file = "mapfigure_zoomedin.png")
 ```
-
 
 
 ```{r}
@@ -147,4 +145,74 @@ map2
 mapshot(map2, file = "mapfigure_zoomedout.png")
 ```
 
+
+## Static Map with ggplot ##
+
+```{r setup2, include = FALSE}
+library(ggplot2)
+library(sf)
+library(rnaturalearth)
+library(rnaturalearthdata)
+library(ggspatial)
+library(cowplot)
+library(ggrepel)
+library(rnaturalearthhires)
+library(maptiles)
+```
+
+```{r}
+Bamfield <- data.frame(name = "Study Area", lon = -125.14078, lat = 48.83336)
+Bamfield_sf <- st_as_sf(Bamfield, coords = c("lon", "lat"), crs = 4326)
+```
+
+```{r}
+world <- ne_countries(scale = "medium", returnclass = "sf")
+
+world_map <- ggplot() +
+  geom_sf(data = world, fill = "gray90", color = "gray50") +
+  geom_sf(data = Bamfield_sf, color = "red", size = 3) +
+  theme_void() +
+  annotation_scale(location = "bl") +
+  annotation_north_arrow(location = "tl", which_north = "true") +
+  coord_sf(xlim = c(-180, 180), ylim = c(-60, 90)) +
+  ggtitle("a) study site location (world map)")
+```
+
+```{r}
+sites <- data.frame(
+  name = c("a)", "b)", "c)"),
+  lon = c(-125.13674, -125.13988, -125.1379),
+  lat = c(48.833226, 48.82869, 48.82711)
+)
+sites_sf <- st_as_sf(sites, coords = c("lon", "lat"), crs = 4326)
+
+basemap <- get_tiles(sites_sf, provider = "OpenStreetMap", crop = TRUE, zoom = 10)
+```
+
+```{r}
+bamfield_map <- ggplot() +
+  layer_spatial(basemap) +
+  geom_sf(data = sites_sf, aes(color = name), size = 4) +
+  geom_text_repel(
+    data = sites, 
+    aes(x = lon, y = lat, label = name), 
+    size = 4
+    ) +
+  coord_sf(
+    xlim = c(-125.154, -125.128),
+    ylim = c(48.822, 48.844),
+    expand = FALSE) +
+  theme_minimal(base_size = 12) +
+  scale_color_manual(values = c("blue", "green", "purple"), labels = c("BMSC South Dock", "West Government Dock", "Island Health Dock")) +
+  annotation_scale(location = "bl", width_hint = 0.3, line_width = 0.5, text_cex = 0.7) +
+  annotation_north_arrow(location = "tl", which_north = "true",
+                         style = north_arrow_fancy_orienteering,
+                         height = unit(0.5, "cm"), width = unit(0.5, "cm")) +
+  labs(x = "Longitude", y = "Latitude", title = "b) sample sites", color = NULL)
+```
+
+```{r}
+combined_map <- plot_grid(world_map, bamfield_map, ncol = 1, rel_heights = c(1, 1.2))
+print(combined_map)
+```
 
