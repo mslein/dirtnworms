@@ -52,7 +52,7 @@ compassicon <- makeIcon(
 ```{r}
 map <- leaflet() %>%
   addTiles() %>%
-  addProviderTiles(providers$CartoDB.Positron) %>%
+  addProviderTiles(providers$Esri.WorldGrayCanvas) %>%
   addLabelOnlyMarkers(
     lng = -125.1346, lat = 48.83552,
     label = HTML("Bamfield Marine<br>Science Centre"),
@@ -124,7 +124,7 @@ mapshot(map, file = "mapfigure_zoomedin.png")
 ```{r}
 map2 <- leaflet() %>%
   addTiles() %>%
-  addProviderTiles(providers$CartoDB.Positron) %>%
+  addProviderTiles(providers$Esri.WorldGrayCanvas) %>%
   addAwesomeMarkers(
       lng = -125.13543, lat = 48.83552,
       icon = iconbmsc,
