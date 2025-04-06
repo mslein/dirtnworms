@@ -160,33 +160,46 @@ library(rnaturalearthhires)
 library(maptiles)
 ```
 
-```{r}
+```{r world map setup}
 Bamfield <- data.frame(name = "Study Area", lon = -125.14078, lat = 48.83336)
 Bamfield_sf <- st_as_sf(Bamfield, coords = c("lon", "lat"), crs = 4326)
+
+bam_coords <- st_coordinates(Bamfield_sf)
+bam_point_df <- data.frame(x=bam_coords[,1], y = bam_coords[,2])
 ```
 
-```{r}
+```{r world map}
 world <- ne_countries(scale = "medium", returnclass = "sf")
 
 world_map <- ggplot() +
   geom_sf(data = world, fill = "gray90", color = "gray50") +
-  geom_sf(data = Bamfield_sf, color = "red", size = 3) +
+  geom_point(data = bam_point_df, aes(x=x, y=y), shape = 0, color = "black", size = 3, stroke = 1) +
   theme_void() +
-  annotation_scale(location = "bl") +
-  annotation_north_arrow(location = "tl", which_north = "true") +
-  coord_sf(xlim = c(-180, 180), ylim = c(-60, 90)) +
+  annotation_scale(location = "bl", width_hint = 0.3, line_width = 0.5, text_cex = 0.7) +
+  annotation_north_arrow(location = "tl", which_north = "true", style = north_arrow_orienteering, width = unit(1, "cm"), height = unit(1, "cm"), pad_x = unit(0.25, "cm")) +
+  coord_sf(xlim = c(-170, -50), ylim = c(-60, 80)) +
   ggtitle("a) study site location (world map)")
 ```
 
-```{r}
+```{r bamfield map setup}
 sites <- data.frame(
-  name = c("a)", "b)", "c)"),
-  lon = c(-125.13674, -125.13988, -125.1379),
+  name = c("a)", "b) ", "c)"),
+  lon = c(-125.13674, -125.13988, -125.137045),
   lat = c(48.833226, 48.82869, 48.82711)
 )
+
 sites_sf <- st_as_sf(sites, coords = c("lon", "lat"), crs = 4326)
 
-basemap <- get_tiles(sites_sf, provider = "OpenStreetMap", crop = TRUE, zoom = 10)
+bbox <- st_bbox(sites_sf)
+bbox_expanded <- bbox
+bbox_expanded["xmin"] <-bbox["xmin"] - 0.002
+bbox_expanded["xmax"] <-bbox["xmax"] + 0.002
+bbox_expanded["ymin"] <- bbox["ymin"] - 0.002
+bbox_expanded["ymax"] <- bbox["ymax"] + 0.002
+
+bbox_expanded_sfc <- st_as_sfc(bbox_expanded)
+
+basemap <- get_tiles(x = bbox_expanded_sfc, provider = "Esri.WorldGrayCanvas", crop = TRUE, zoom = 15)
 ```
 
 ```{r}
@@ -196,23 +209,24 @@ bamfield_map <- ggplot() +
   geom_text_repel(
     data = sites, 
     aes(x = lon, y = lat, label = name), 
-    size = 4
+    size = 4,
+    nudge_y = 0.0004
     ) +
   coord_sf(
-    xlim = c(-125.154, -125.128),
-    ylim = c(48.822, 48.844),
     expand = FALSE) +
   theme_minimal(base_size = 12) +
   scale_color_manual(values = c("blue", "green", "purple"), labels = c("BMSC South Dock", "West Government Dock", "Island Health Dock")) +
-  annotation_scale(location = "bl", width_hint = 0.3, line_width = 0.5, text_cex = 0.7) +
+  annotation_scale(location = "bl", width_hint = 0.25) +
   annotation_north_arrow(location = "tl", which_north = "true",
-                         style = north_arrow_fancy_orienteering,
-                         height = unit(0.5, "cm"), width = unit(0.5, "cm")) +
-  labs(x = "Longitude", y = "Latitude", title = "b) sample sites", color = NULL)
+                         style = north_arrow_fancy_orienteering) +
+  labs(x = "Longitude", y = "Latitude", title = "b) sample sites", color = NULL) +
+  theme(
+    legend.position = "right", 
+    panel.grid.major = element_blank()
+  )
 ```
 
 ```{r}
-combined_map <- plot_grid(world_map, bamfield_map, ncol = 1, rel_heights = c(1, 1.2))
-print(combined_map)
+world_map + bamfield_map + plot_layout(ncol = 2, widths = c(2, 1.3))
 ```
 
