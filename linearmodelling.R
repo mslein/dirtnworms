@@ -18,9 +18,10 @@ ev<- light_temp %>%
 #looking at reemergence time
 hist(log(turb$CR_CE_time))
 shapiro.test(turb$CR_CE_time) #not normal, using log transformation
-
+hist(turb$tube_diameter_cm)
+shapiro.test(sqrt(turb$tube_diameter_cm)) #this improves it?
 #trying a glmm w/ a poisson distribution
-mod1 <- glmer(CR_CE_time ~ trt + tube_diameter_cm + (1|trial), family=poisson(link="log"), data=turb)
+mod1 <- glmer(CR_CE_time ~ trt + sqrt(tube_diameter_cm) + (1|trial), family=poisson(link="log"), data=turb)
 summary(mod1)
 confint(mod1)
 #looking at overdispersion
@@ -34,30 +35,38 @@ overdisp_fun <- function(model) {
 }
 overdisp_fun(mod1) #grossly overdispersed
 #trying a glmm w/ a negative binomial distribution
-mnb1 <- glmer.nb(CR_CE_time ~ trt + tube_diameter_cm + (1 | trial), data = turb)
+mnb1 <- glmer.nb(CR_CE_time ~ trt + sqrt(tube_diameter_cm) + (1 | trial), data = turb)
 summary(mnb1)
 confint.merMod(mnb1, method="Wald")
 overdisp_fun(mnb1) #not overdispersed:)
 
 #using the negative binomial and back transforming the estimates:)
-backtransformed_turb<- emmeans(mnb1, ~ trt + tube_diameter_cm, type = "response", adjust="bonferroni", level=0.95) %>% as.data.frame()
+backtransformed_turb<- emmeans(mnb1, ~ trt, type="response", adjust="bonferroni", level=0.95) %>% as.data.frame()
+emmeans(mnb1, ~ sqrt(tube_diameter_cm), adjust="bonferroni", level=0.95)
+
 
 ############# Alex's data ###########
 #looking at reemergence time
 hist(ev$emerge_s)
 shapiro.test(ev$emerge_s) #not normal, using log transformation
-mod2 <- glmer(emerge_s ~ temp_trt*light_trt + tube_diameter_cm + (1|trial), family=poisson(link="log"), data=ev)
+hist(ev$tube_diameter_cm)
+shapiro.test(sqrt(ev$tube_diameter_cm)) #this improves it?
+
+mod2 <- glmer(emerge_s ~ temp_trt*light_trt + sqrt(tube_diameter_cm) + (1|trial), family=poisson(link="log"), data=ev)
 summary(mod2)
 confint(mod2)
 overdisp_fun(mod2) #grossly overdispersed
 #trying a glmm w/ a negative binomial distribution
-mnb2 <- glmer.nb(emerge_s ~ temp_trt*light_trt + tube_diameter_cm + (1 | trial), data = ev)
+mnb2 <- glmer.nb(emerge_s ~ temp_trt*light_trt + sqrt(tube_diameter_cm) + (1 | trial), data = ev)
 summary(mnb2)
 confint.merMod(mnb2, method="Wald")
 overdisp_fun(mnb2) #less overdispersed
-backtransformed_ev_rem<- emmeans(mnb2, ~ temp_trt*light_trt + tube_diameter_cm , type = "response", adjust="bonferroni", level=0.95) %>%
+backtransformed_ev_abiotic<- emmeans(mnb2, ~ light_trt|temp_trt +tube_diameter_cm , adjust="bonferroni", level=0.95) %>%
   as.data.frame() %>%
   mutate(trt_comb =str_c(temp_trt, light_trt))
+
+
+emmeans(mnb1, ~tube_diameter_cm , adjust="bonferroni", level=0.95)
 
 #looking at retraction time
 hist(ev$retract_s)
@@ -72,19 +81,11 @@ mnb3 <- glmer.nb(retract_s ~ temp_trt*light_trt + tube_diameter_cm + (1 | trial)
 summary(mnb3)
 overdisp_fun(mnb3) # a little over dispersed
 #using the negative binomial and back transforming the estimates:)
-backtransformed_ev_ret<- emmeans(mnb3, ~ temp_trt*light_trt + tube_diameter_cm , type = "response", adjust="bonferroni", level=0.95) %>%
+backtransformed_ev_ret<- emmeans(mnb3, ~ temp_trt*light_trt, type = "response", adjust="bonferroni", level=0.95) %>%
   as.data.frame() %>%
   mutate(trt_comb =str_c(temp_trt, light_trt))
-confint(backtransformed_ev_ret, adjust = "bonferroni", level = 0.95) #angry??
 
-## this works?? ###
 
-backtransformed_ev_ret1 <- emmeans(mnb3, ~temp_trt*light_trt + tube_diameter_cm, type = "response", adjust="bonferroni", level = 0.95)
-
-backtransformed_ev_ret1_df <- confint(backtransformed_ev_ret1, adjust = "bonferroni", level = 0.95) %>%
-  as.data.frame() %>%
-  mutate(trt_comb = str_c(temp_trt, light_trt))
-####### visualizing data ###############
 
 p1 <- ggplot()+
   geom_point(data=turb, aes(x=trt, y=CR_CE_time, colour=trt), alpha=0.03)+
@@ -129,3 +130,18 @@ p1 <- ggplot()+
 
 
 p3/p2/p1
+
+hist(sqrt(turb$tube_diameter_cm))
+shapiro.test(sqrt(turb$tube_diameter_cm))
+
+
+ggplot()+
+  geom_point(data=ev,aes(x=tube_diameter_cm, y=retract_s), colour="grey")+
+  geom_point(data=turb,aes(x=sqrt(tube_diameter_cm), y=log(CR_CE_time)), colour="black")+
+  geom_abline(slope=4.75, intercept=0.546, colour="grey")+
+  geom_abline(slope=5.39, intercept=0.648, colour="black")
+  #scale_x_discrete(limits=c("control", "moderate  sediment", "high sediment"))+
+  coord_flip()+
+  theme_classic()+
+  ylab("Retraction time (s)")+
+  xlab("")
