@@ -175,11 +175,13 @@ world <- ne_countries(scale = "medium", returnclass = "sf")
 world_map <- ggplot() +
   geom_sf(data = world, fill = "gray90", color = "gray50") +
   geom_point(data = bam_point_df, aes(x=x, y=y), shape = 0, color = "black", size = 3, stroke = 1) +
-  theme_void() +
+  theme_nothing() +
   annotation_scale(location = "bl", width_hint = 0.3, line_width = 0.5, text_cex = 0.7) +
   annotation_north_arrow(location = "tl", which_north = "true", style = north_arrow_orienteering, width = unit(1, "cm"), height = unit(1, "cm"), pad_x = unit(0.25, "cm")) +
   coord_sf(xlim = c(-170, -45), ylim = c(30, 80)) +
   ggtitle("a) study site location (world map)")
+
+world_map
 ```
 
 ```{r bamfield map setup}
@@ -207,14 +209,16 @@ basemap <- get_tiles(x = bbox_expanded_sfc, provider = "Esri.WorldGrayCanvas", c
 bamfield_map <- ggplot() +
   layer_spatial(basemap) +
   geom_sf(data = sites_sf, aes(color = name), size = 2.5) +
-  coord_sf(
-    expand = FALSE) +
-  theme_minimal(base_size = 12) +
+  coord_sf(expand = FALSE) +
   scale_color_manual(values = c("#E0aFA0", "#8E4A49", "#7DAA92"), labels = c("BMSC South Dock", "West Government Dock", "Island Health Dock")) +
   annotation_scale(location = "bl", width_hint = 0.25) +
-  annotation_north_arrow(location = "tl", which_north = "true",
-                         style = north_arrow_fancy_orienteering, width = unit(1, "cm"), height = unit(1, "cm")) +
+  annotation_north_arrow(location = "tl", 
+                         which_north = "true",
+                         style = north_arrow_fancy_orienteering, 
+                         width = unit(1, "cm"), 
+                         height = unit(1, "cm")) +
   labs(x = "Longitude", y = "Latitude", title = "b) sample sites", color = NULL) +
+  theme_minimal(base_size = 12) +
   theme(
     legend.position = "right", 
     panel.grid.major = element_blank(),
@@ -222,6 +226,8 @@ bamfield_map <- ggplot() +
     axis.tick.x = element_line(),
     axis.line.x = element_line()
   )
+
+bamfield_map
 ```
 
 ```{r}
@@ -233,16 +239,19 @@ bamfield_map2 <- ggplot() +
   geom_sf(data = sites_sf, aes(color = name), size = 2.5) +
   coord_sf(
     expand = FALSE) +
-  theme_minimal(base_size = 12) +
   scale_color_manual(values = c("#E0aFA0", "#8E4A49", "#7DAA92"), labels = c("BMSC South Dock", "West Government Dock", "Island Health Dock")) +
   annotation_scale(location = "bl", width_hint = 0.25) +
-  annotation_north_arrow(location = "tl", which_north = "true",
-                         style = north_arrow_fancy_orienteering, width = unit(1, "cm"), height = unit(1, "cm")) +
+  annotation_north_arrow(location = "tl", 
+                         which_north = "true",
+                         style = north_arrow_fancy_orienteering, 
+                         width = unit(1, "cm"), 
+                         height = unit(1, "cm")) +
   labs(x = "Longitude", y = "Latitude", title = "b) sample sites", color = NULL) +
+  theme_minimal(base_size = 12) +
   theme(
     legend.position = "right", 
     panel.grid.major = element_blank(),
-    axis.text.x = element_blank(),
+    axis.text.x = element_text(angle = 45, hjust = 1),
     axis.tick.x = element_line(),
     axis.line.x = element_line()
   )
