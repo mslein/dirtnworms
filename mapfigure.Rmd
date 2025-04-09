@@ -175,7 +175,7 @@ world <- ne_countries(scale = "medium", returnclass = "sf")
 world_map <- ggplot() +
   geom_sf(data = world, fill = "gray90", color = "gray50") +
   geom_point(data = bam_point_df, aes(x=x, y=y), shape = 0, color = "black", size = 3, stroke = 1) +
-  theme_nothing() +
+  theme_minimal() +
   annotation_scale(location = "bl", width_hint = 0.3, line_width = 0.5, text_cex = 0.7) +
   annotation_north_arrow(location = "tl", which_north = "true", style = north_arrow_orienteering, width = unit(1, "cm"), height = unit(1, "cm"), pad_x = unit(0.25, "cm")) +
   coord_sf(xlim = c(-170, -45), ylim = c(30, 80)) +
