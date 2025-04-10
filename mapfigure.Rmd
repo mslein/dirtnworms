@@ -258,7 +258,122 @@ dev.off()
 ```
 
 
+## attempt idk
 
+```{r}
+theme_map <- function(){
+  theme_bw() +
+    theme(panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          axis.title = element_blank(),
+          axis.text = element_text(size = 11))
+}
+```
+
+```{r}
+theme_inset <- function () {
+  theme_bw() + 
+    theme(panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          axis.title = element_blank(),
+          axis.text = element_blank(),
+          legend.position = "none",
+          plot.background = element_blank(),
+          plot.margin = unit(c(0,0,0,0), "cm"),
+          axis.ticks.length.x = unit(0,'pt'))
+}
+```
+
+```{r}
+bc.coast <- read_sf("C:/Users/lterp/Desktop/OneDrive - UBC/dirtnworms/dirtnworms/figures/mapfigures/bc-coast.shp")
+st_crs(bc.coast)
+```
+
+
+```{r}
+sites <- data.frame(
+  name = c("BMSC South Dock", "West Government Dock", "Island Health Dock"),
+  lon = c(-125.1378, -125.13988, -125.137045),
+  lat = c(48.833226, 48.82869, 48.82711)
+)
+
+sites$lon_adj <- sites$lon - 0.0015
+
+sites_sf_adj <- st_as_sf(sites, coords = c("lon_adj", "lat"), crs = 4326)
+```
+
+```{r}
+study.area <- ggplot() +
+  geom_sf(data = bc.coast) +
+  geom_sf(data = sites_sf_adj, size = 3, shape = 21, fill = "steelblue", color = "black", stroke = 0.4) +
+  geom_sf_text(data = sites_sf_adj, aes(label = name), size = 3, nudge_y = 0.001) +
+  annotation_scale(width_hint = 0.35, style = "bar") +
+  annotation_north_arrow(location = "tr",
+                         height = unit(0.9, "cm"), width = unit(0.6, "cm"),
+                         which_north = "true") +
+  coord_sf(xlim = c(-125.13, -125.15), ylim = c(48.82, 48.85)) + 
+  theme_map()
+study.area
+```
+
+```{r}
+bamfield.inlet <- ggplot() +
+  geom_sf(data = bc.coast) +
+  annotate(geom = "text",
+           x = -125.15, y = 48.95,
+           label = "Barkley\nSound",
+           fontface = "italic",
+           size = 4.2, colour = "steelblue") +
+  annotate(geom = "text",
+           x = -125.07, y = 48.83,
+           label = "Bamfield\nInlet",
+           fontface = "italic",
+           size = 4.2, colour = "black") +
+  annotate(geom = "rect",
+           xmin = -125.13, xmax = -125.15, ymin = 48.82, ymax = 48.85, 
+           fill = "transparent", colour = "black",
+           linetype = "dashed") +
+  annotation_scale(width_hint = 0.35, style = "bar") +
+  annotation_north_arrow(location = "tr",
+                         height = unit(0.9, "cm"), width = unit(0.6, "cm"),
+                         which_north = "true") +
+  coord_sf(xlim = c(-125.4, -125), ylim = c(48.7, 49)) + 
+  theme_map()
+bamfield.inlet
+```
+
+```{r}
+inset <- ggplot() + 
+  geom_sf(data = bc.coast, linewidth = 0.04) +
+  annotate(geom = "rect",
+           xmin = -125.4, xmax = -125, ymin = 48.7, ymax = 49, 
+           fill = "transparent", colour = "black") +
+  annotate(geom = "text",
+           x = -128, y = 47,
+           label = "Pacific Ocean",
+           fontface = "italic",
+           size = 4.2, colour = "steelblue") +
+  annotate(geom = "text",
+           x = -124, y = 53,
+           label = "British\nColumbia",
+           size = 4.2, lineheight = 0.75, colour = "black") +
+  annotate(geom = "text",
+           x = -122, y = 46,
+           label = "USA",
+           size = 4.2, colour = "black") +
+  coord_sf(xlim = c(-131, -120), ylim = c(45, 55)) +
+  theme_inset()
+inset
+```
+
+```{r}
+bamfield.inlet + inset_element(inset,
+                               left = -0.02, bottom = 0.4, right = 0.5, top = 1,
+                               align_to = "panel") +
+  study.area + plot_layout(ncol = 2)
+
+ggsave("C:/Users/lterp/Desktop/OneDrive - UBC/dirtnworms/dirtnworms/figures/mapfigures/inlet-with-inset.PNG", width = 17, height = 17, units = "cm", background = "white", dpi = 800)
+```
 
 
 
