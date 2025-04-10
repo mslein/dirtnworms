@@ -179,14 +179,19 @@ world_map <- ggplot() +
   annotation_scale(location = "bl", width_hint = 0.3, line_width = 0.5, text_cex = 0.7) +
   annotation_north_arrow(location = "tl", which_north = "true", style = north_arrow_orienteering, width = unit(1, "cm"), height = unit(1, "cm"), pad_x = unit(0.25, "cm")) +
   coord_sf(xlim = c(-170, -45), ylim = c(30, 80)) +
-  ggtitle("a) study site location (world map)")
+  labs(x = "Longitude", y = "Latitude") +
+  ggtitle("a) study site location (world map)") +
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank()
+  )
 
 world_map
 ```
 
 ```{r bamfield map setup}
 sites <- data.frame(
-  name = c("a)", "b) ", "c)"),
+  name = c("BMSC South Dock", "West Government Dock", "Island Health Dock"),
   lon = c(-125.13674, -125.13988, -125.137045),
   lat = c(48.833226, 48.82869, 48.82711)
 )
@@ -209,8 +214,9 @@ basemap <- get_tiles(x = bbox_expanded_sfc, provider = "Esri.WorldGrayCanvas", c
 bamfield_map <- ggplot() +
   layer_spatial(basemap) +
   geom_sf(data = sites_sf, aes(color = name), size = 2.5) +
+  geom_sf_text(data = sites_sf, aes(label = name), size = 3, nudge_y = 0.0009, nudge_x = 0.001) +
   coord_sf(expand = FALSE) +
-  scale_color_manual(values = c("#E0aFA0", "#8E4A49", "#7DAA92"), labels = c("BMSC South Dock", "West Government Dock", "Island Health Dock")) +
+  scale_color_manual(values = c("black", "black", "black")) +
   annotation_scale(location = "bl", width_hint = 0.25) +
   annotation_north_arrow(location = "tl", 
                          which_north = "true",
@@ -220,52 +226,54 @@ bamfield_map <- ggplot() +
   labs(x = "Longitude", y = "Latitude", title = "b) sample sites", color = NULL) +
   theme_minimal(base_size = 12) +
   theme(
-    legend.position = "right", 
+    legend.position = "none", 
     panel.grid.major = element_blank(),
     axis.text.x = element_text(angle = 45, hjust = 1),
     axis.tick.x = element_line(),
     axis.line.x = element_line()
   )
-
-bamfield_map
 ```
 
 ```{r}
 world_map + bamfield_map + plot_layout(ncol = 2, widths = c(1.5, 1))
 ```
-```{r}
-bamfield_map2 <- ggplot() +
-  layer_spatial(basemap) +
-  geom_sf(data = sites_sf, aes(color = name), size = 2.5) +
-  coord_sf(
-    expand = FALSE) +
-  scale_color_manual(values = c("#E0aFA0", "#8E4A49", "#7DAA92"), labels = c("BMSC South Dock", "West Government Dock", "Island Health Dock")) +
-  annotation_scale(location = "bl", width_hint = 0.25) +
-  annotation_north_arrow(location = "tl", 
-                         which_north = "true",
-                         style = north_arrow_fancy_orienteering, 
-                         width = unit(1, "cm"), 
-                         height = unit(1, "cm")) +
-  labs(x = "Longitude", y = "Latitude", title = "b) sample sites", color = NULL) +
-  theme_minimal(base_size = 12) +
-  theme(
-    legend.position = "right", 
-    panel.grid.major = element_blank(),
-    axis.text.x = element_text(angle = 45, hjust = 1),
-    axis.tick.x = element_line(),
-    axis.line.x = element_line()
-  )
-```
+
+
 
 *the lines need to be adjusted but it's a pain so i'm going to wait until i'm done messing with the plot further*
 
 ```{r}
 comb_plot_2 <- ggdraw() +
-  draw_plot(world_map, x = 0, y= 0, width = 0.3, height = 1) +
-  draw_plot(bamfield_map2, x = 0.4, y = 0, width = 0.6, height = 1) +
-  draw_line(x=c(0.124, 0.53), y = c(0.633, 0.74), color = "black", size = 0.5) +
-  draw_line(x=c(0.124, 0.53), y = c(0.605, 0.27), color = "black", size = 0.5) 
-print(comb_plot_2)
+  draw_plot(world_map, x = 0, y= 0, width = 0.5, height = 1) +
+  draw_plot(bamfield_map, x = 0.45, y = 0, width = 0.6, height = 1) +
+  draw_line(x=c(0.222, 0.665), y = c(0.45, 0.945), color = "black", size = 0.5) +
+  draw_line(x=c(0.222, 0.665), y = c(0.44, 0.149), color = "black", size = 0.5) 
 ```
+
+
+```{r}
+png("C:/Users/lterp/Desktop/OneDrive - UBC/dirtnworms/dirtnworms/figures/mapfigures/mapfigureab_wline.png", width = 14, height = 6, units = "in", res = 300)
+grid::grid.draw(comb_plot_2)
+dev.off()
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
