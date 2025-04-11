@@ -260,6 +260,8 @@ dev.off()
 
 ## attempt idk
 
+## uses data from wesleygreentree on github thx maggie
+
 ```{r, include = FALSE}
 library(sf)
 library(ggplot2)
