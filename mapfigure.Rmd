@@ -260,6 +260,14 @@ dev.off()
 
 ## attempt idk
 
+```{r, include = FALSE}
+library(sf)
+library(ggplot2)
+library(ggspatial)
+library(patchwork)
+```
+
+
 ```{r}
 theme_map <- function(){
   theme_bw() +
@@ -277,6 +285,7 @@ theme_inset <- function () {
           panel.grid.minor = element_blank(),
           axis.title = element_blank(),
           axis.text = element_blank(),
+          axis.ticks = element_blank(),
           legend.position = "none",
           plot.background = element_blank(),
           plot.margin = unit(c(0,0,0,0), "cm"),
@@ -306,12 +315,27 @@ sites_sf_adj <- st_as_sf(sites, coords = c("lon_adj", "lat"), crs = 4326)
 study.area <- ggplot() +
   geom_sf(data = bc.coast) +
   geom_sf(data = sites_sf_adj, size = 3, shape = 21, fill = "steelblue", color = "black", stroke = 0.4) +
-  geom_sf_text(data = sites_sf_adj, aes(label = name), size = 3, nudge_y = 0.001) +
+  annotate(geom = "text",
+           x = -125.1343, y = 48.8345,
+           label = "BMSC\nSouth Dock",
+           fontface = "bold.italic",
+           size = 3, colour = "black") +
+  annotate(geom = "text",
+           x = -125.1456, y = 48.83,
+           label = "West Gov.\nDock",
+           fontface = "bold.italic",
+           size = 3, colour = "black") +
+   annotate(geom = "text",
+           x = -125.1334, y = 48.8275,
+           label = "Island\nHealth Dock",
+           fontface = "bold.italic",
+           size = 3, colour = "black") +
   annotation_scale(width_hint = 0.35, style = "bar") +
   annotation_north_arrow(location = "tr",
                          height = unit(0.9, "cm"), width = unit(0.6, "cm"),
                          which_north = "true") +
-  coord_sf(xlim = c(-125.13, -125.15), ylim = c(48.82, 48.85)) + 
+  coord_sf(xlim = c(-125.129, -125.15), ylim = c(48.82, 48.85)) + 
+  scale_x_continuous(breaks = c(-125.15, -125.14, -125.13)) +
   theme_map()
 study.area
 ```
@@ -349,8 +373,8 @@ inset <- ggplot() +
            xmin = -125.4, xmax = -125, ymin = 48.7, ymax = 49, 
            fill = "transparent", colour = "black") +
   annotate(geom = "text",
-           x = -128, y = 47,
-           label = "Pacific Ocean",
+           x = -127.5, y = 47,
+           label = "Pacific\nOcean",
            fontface = "italic",
            size = 4.2, colour = "steelblue") +
   annotate(geom = "text",
@@ -368,12 +392,13 @@ inset
 
 ```{r}
 bamfield.inlet + inset_element(inset,
-                               left = -0.02, bottom = 0.4, right = 0.5, top = 1,
+                               left = -0.03, bottom = 0.4, right = 0.5, top = 1,
                                align_to = "panel") +
   study.area + plot_layout(ncol = 2)
 
-ggsave("C:/Users/lterp/Desktop/OneDrive - UBC/dirtnworms/dirtnworms/figures/mapfigures/inlet-with-inset.PNG", width = 17, height = 17, units = "cm", background = "white", dpi = 800)
+ggsave("C:/Users/lterp/Desktop/OneDrive - UBC/dirtnworms/dirtnworms/figures/mapfigures/inlet-with-inset.PNG", width = 20, height = 13, units = "cm", background = "white", dpi = 800)
 ```
+
 
 
 
