@@ -400,9 +400,16 @@ bamfield.inlet + inset_element(inset,
                                align_to = "panel") +
   study.area + plot_layout(ncol = 2) + plot_annotation(tag_levels = list(c("a", "b", "c")))
 
-ggsave("figures/mapfigures/inlet-with-inset.PNG", width = 20, height = 13, units = "cm", background = "white", dpi = 800)
+ggsave("figures/mapfigures/inlet-with-inset-abc.PNG", width = 20, height = 13, units = "cm", background = "white", dpi = 800)
 ```
+```{r}
+bamfield.inlet + inset_element(inset,
+                               left = -0.03, bottom = 0.4, right = 0.5, top = 1.04,
+                               align_to = "panel") +
+  study.area + plot_layout(ncol = 2) + plot_annotation(tag_levels = list(c("a", "", "b")))
 
+ggsave("figures/mapfigures/inlet-with-inset-ab.PNG", width = 20, height = 13, units = "cm", background = "white", dpi = 800)
+```
 
 
 
