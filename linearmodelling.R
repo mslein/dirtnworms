@@ -25,10 +25,12 @@ shapiro.test(sqrt(turb$tube_diameter_cm)) #this improves it?
 mg1 <- glmmTMB(emerge_s ~ trt + sqrt(tube_diameter_cm) + (1 | trial), ziformula = ~1,
                data = turb, family = ziGamma(link = "log"))
 Anova(mg1, type=2)
+df.residual(mg1) #calculating for F stats
 #back transforming by hand because of the asymmetric CIs
 emm_1 <- emmeans(mg1, specs = ~ trt, type = "link")
 df1 <-summary(emm_1, type = "response") %>% as.data.frame()  # Back-transform manually if needed
-pairs(emm_1) # to get p-values between the different levels
+pairs(emm_1, adjust = "bonferroni") # to get p-values between the different levels
+
 #getting the back transformed tube diameter estimate
 emmeans(mg1, ~sqrt(tube_diameter_cm), type="response", level=0.95)
 
@@ -45,11 +47,13 @@ shapiro.test(sqrt(ev$tube_diameter_cm)) #this improves it?
 #running gamma because it's rate data, lots of zeros so did zero inflated gamma
 mg2 <- glmmTMB(emerge_s ~ temp_trt*light_trt + sqrt(tube_diameter_cm) + (1 | trial), ziformula = ~1,
                data = ev, family = ziGamma(link = "log"))
+Anova(mg2, type=3)
+df.residual(mg2)
 #back transforming by hand because of the asymmetric CIs
 emm_2 <- emmeans(mg2, specs = ~ temp_trt*light_trt, type = "link")
 df2 <-summary(emm_2, type = "response") %>% as.data.frame() %>%
   mutate(trt_comb =str_c(temp_trt, light_trt))
-pairs(emm_2) # to get p-values between the different levels
+pairs(emm_2, adjust = "bonferroni") # to get p-values between the different levels
 #need to double check whether this is transforms the sqrt() too
 emmeans(mg2, ~sqrt(tube_diameter_cm), type="response", level=0.95)
 
@@ -66,6 +70,7 @@ shapiro.test(ev$retract_s) #not normal, using log transformation
 #back transforming by hand because of the asymmetric CIs
 mg3 <- glmmTMB(retract_s ~ temp_trt*light_trt + sqrt(tube_diameter_cm) + (1 | trial), ziformula = ~1,
                data = ev, family = ziGamma(link = "log"))
+Anova(mg3, type=3)
 #back transforming by hand because of the asymmetric CIs
 emm_3 <- emmeans(mg3, specs = ~ temp_trt*light_trt, type = "link")
 pairs(emm_3) # to get p-values between the different levels
