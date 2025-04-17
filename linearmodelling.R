@@ -19,7 +19,7 @@ ev<- light_temp %>%
 #looking at reemergence time
 hist(log(turb$emerge_s))
 shapiro.test(log(turb$emerge_s)) #not normal, using log transformation
-hist(turb$tube_diameter_cm)
+hist(sqrt(turb$tube_diameter_cm))
 shapiro.test(sqrt(turb$tube_diameter_cm)) #this improves it?
 #running gamma because it's rate data, lots of zeros so did zero inflated gamma
 mg1 <- glmmTMB(emerge_s ~ trt + sqrt(tube_diameter_cm) + (1 | trial), ziformula = ~1,
@@ -42,7 +42,7 @@ df1b <-summary(emm_1b, type = "response")
 #looking at reemergence time
 hist(ev$emerge_s)
 shapiro.test(ev$emerge_s) #not normal, using log transformation
-hist(ev$tube_diameter_cm)
+hist(sqrt(ev$tube_diameter_cm))
 shapiro.test(sqrt(ev$tube_diameter_cm)) #this improves it?
 #running gamma because it's rate data, lots of zeros so did zero inflated gamma
 mg2 <- glmmTMB(emerge_s ~ temp_trt*light_trt + sqrt(tube_diameter_cm) + (1 | trial), ziformula = ~1,
