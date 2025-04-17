@@ -332,6 +332,10 @@ study.area <- ggplot() +
            label = "Island\nHealth Dock",
            fontface = "bold.italic",
            size = 3, colour = "black") +
+  annotate(geom = "text",
+           x = -125.149, y = 48.85,
+           label = "c)",
+           size = 4.2, colour = "black") +
   annotation_scale(width_hint = 0.35, style = "bar") +
   annotation_north_arrow(location = "tr",
                          height = unit(0.9, "cm"), width = unit(0.6, "cm"),
@@ -359,6 +363,10 @@ bamfield.inlet <- ggplot() +
            xmin = -125.13, xmax = -125.15, ymin = 48.82, ymax = 48.85, 
            fill = "transparent", colour = "black",
            linetype = "dashed") +
+  annotate(geom = "text",
+           x = -125.39, y = 48.725,
+           label = "b)",
+           size = 4.2, colour = "black") +
   annotation_scale(width_hint = 0.35, style = "bar") +
   annotation_north_arrow(location = "tr",
                          height = unit(0.9, "cm"), width = unit(0.6, "cm"),
@@ -387,6 +395,10 @@ inset <- ggplot() +
            x = -122, y = 46,
            label = "USA",
            size = 4.2, colour = "black") +
+  annotate(geom = "text",
+           x = -130, y = 45.2,
+           label = "a)",
+           size = 4, colour = "black") +
   coord_sf(xlim = c(-131, -120), ylim = c(45, 55)) +
   theme_inset()
 inset
@@ -396,20 +408,13 @@ inset
 
 ```{r}
 bamfield.inlet + inset_element(inset,
-                               left = -0.05, bottom = 0.4, right = 0.5, top = 1.04,
+                            left = -0.0274, bottom = 0.4, right = 0.5, top = 1,
                                align_to = "panel") +
-  study.area + plot_layout(ncol = 2) + plot_annotation(tag_levels = list(c("a", "b", "c")))
+  study.area + plot_layout(ncol = 2)
 
-ggsave("figures/mapfigures/inlet-with-inset-abc.PNG", width = 20, height = 13, units = "cm", background = "white", dpi = 800)
+ggsave("figures/mapfigures/inlet-with-inset.PNG", width = 20, height = 13, units = "cm", background = "white", dpi = 800)
 ```
-```{r}
-bamfield.inlet + inset_element(inset,
-                               left = -0.03, bottom = 0.4, right = 0.5, top = 1.04,
-                               align_to = "panel") +
-  study.area + plot_layout(ncol = 2) + plot_annotation(tag_levels = list(c("a", "", "b")))
 
-ggsave("figures/mapfigures/inlet-with-inset-ab.PNG", width = 20, height = 13, units = "cm", background = "white", dpi = 800)
-```
 
 
 
