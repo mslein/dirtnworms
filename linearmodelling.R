@@ -120,8 +120,9 @@ p1 <- ggplot(data=turb, aes(x=trt, y=emerge_s, colour=trt), )+
     ylab("Re-emergence time (s)")+
    xlab("")+
    theme(legend.position='none')+
-   geom_segment(aes(x = 1, xend = 3, y = 600, yend = 600), colour="black") +   # A vs B bracket
-   geom_text(aes(x = 2, y = 620, label = "*"), colour="black") +          # A vs B label
+   geom_segment(aes(x = 1, xend = 4, y = 600, yend = 600), colour="black") + # A vs B bracket
+   
+   geom_text(aes(x = 2.5, y = 620, label = "*"), colour="black") +             # A vs B label
    geom_segment(aes(x = 2, xend = 4, y = 550, yend = 550), colour="black") +   # A vs C bracket
    geom_text(aes(x = 3, y = 570, label = "*"), colour="black") 
 
