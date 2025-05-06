@@ -92,7 +92,7 @@ ggplot(df3b, aes(x = tube_diameter_cm, y = response)) +
 
 ####### plots #######
 p1 <- ggplot(data=turb, aes(x=trt, y=emerge_s, colour=trt), )+
-  geom_point(alpha=0.03)+
+  geom_jitter(alpha=0.15, width=0.1)+
   #geom_violin(data=turb, aes(x=trt, y=CR_CE_time, colour=trt), alpha=0.03)+
   geom_pointrange(data=df1, aes(x=trt, y=response, ymin=asymp.LCL, ymax=asymp.UCL, colour=trt), size=0.75)+
   scale_colour_manual(values = c("black", "navajowhite3", "lightsalmon4"), breaks=c("control", "moderate  sediment", "high sediment"))+
@@ -108,7 +108,7 @@ p1 <- ggplot(data=turb, aes(x=trt, y=emerge_s, colour=trt), )+
   
   
  p2 <-  ggplot(data=ev,aes(x=trt_comb, y=emerge_s, colour=trt_comb), position = position_dodge(width = 0.75))+
-    geom_point(alpha=0.15)+
+    geom_jitter(alpha=0.15, width=0.1)+
    #geom_violin(data=ev,aes(x=temp_trt, y=emerge_s, colour=trt_comb), position = position_dodge(width = 0.75), alpha=0.15)+
    geom_pointrange(data=df2, aes(x=trt_comb, y=response, ymin=asymp.LCL, 
                                                      ymax=asymp.UCL, colour=trt_comb),
@@ -140,10 +140,9 @@ shapiro.test(sqrt(turb$tube_diameter_cm))
 #SI figures
 
 ps2 <- ggplot()+
-  geom_point(data=ev,aes(x=trt_comb, y=retract_s, colour=trt_comb), position = position_dodge(width = 0.75), alpha=0.15)+
+  geom_jitter(data=ev,aes(x=trt_comb, y=retract_s, colour=trt_comb), alpha=0.15, width=0.1)+
   geom_pointrange(data=df3, aes(x=trt_comb, y=response, ymin=asymp.LCL, 
-                                ymax=asymp.UCL, colour=trt_comb),
-                  position = position_dodge(width = 0.75), size=0.75)+
+                                ymax=asymp.UCL, colour=trt_comb), size=0.75)+
   scale_colour_manual(values=c("black", "darkgrey","red4", "tomato3"))+
   scale_x_discrete(labels=c("cold/dark", "cold/light", "warm/dark", "warm/light"))+
   coord_flip()+
