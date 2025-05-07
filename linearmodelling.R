@@ -29,7 +29,7 @@ df.residual(mg1) #calculating for F stats
 #back transforming by hand because of the asymmetric CIs
 emm_1 <- emmeans(mg1, specs = ~ trt, type = "link")
 df1 <-summary(emm_1, type = "response") %>% as.data.frame()  # Back-transform manually if needed
-pairs(emm_1, adjust = "bonferroni") # to get p-values between the different levels
+pairs(emm_1, adjust = "bonferroni", type="response") # to get p-values between the different levels
 
 #getting the back transformed tube diameter estimate
 emmeans(mg1, ~sqrt(tube_diameter_cm), type="response", level=0.95)
@@ -53,7 +53,7 @@ df.residual(mg2)
 emm_2 <- emmeans(mg2, specs = ~ temp_trt*light_trt, type = "link")
 df2 <-summary(emm_2, type = "response") %>% as.data.frame() %>%
   mutate(trt_comb =str_c(temp_trt, light_trt))
-pairs(emm_2, adjust = "bonferroni") # to get p-values between the different levels
+pairs(emm_2, adjust = "bonferroni", type="response") # to get p-values between the different levels
 #need to double check whether this is transforms the sqrt() too
 emmeans(mg2, ~sqrt(tube_diameter_cm), type="response", level=0.95)
 
