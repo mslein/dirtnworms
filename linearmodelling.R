@@ -1,6 +1,6 @@
 ##### e.vancouveri abiotic stress analysis #####
 #reading in packaages and data
-pacman::p_load(tidyverse, lme4, MuMIn, emmeans, patchwork, glmmTMB, car, ggsignif)
+pacman::p_load(tidyverse, lme4, MuMIn, emmeans, patchwork, glmmTMB, car, ggsignif, ggpubr)
 light_temp <- read_csv("alex_anais_tidy.csv") 
 turb <- read_csv("tidy_dirtnworms.csv") %>%
   mutate(trial=as.factor(trial), 
@@ -91,20 +91,27 @@ ggplot(df3b, aes(x = tube_diameter_cm, y = response)) +
 
 
 ####### plots #######
-p1 <- ggplot(data=turb, aes(x=trt, y=emerge_s, colour=trt), )+
+p1 <- ggplot(data=turb, aes(x=trt, y=emerge_s, colour=trt))+
   geom_jitter(alpha=0.15, width=0.1)+
   #geom_violin(data=turb, aes(x=trt, y=CR_CE_time, colour=trt), alpha=0.03)+
   geom_pointrange(data=df1, aes(x=trt, y=response, ymin=asymp.LCL, ymax=asymp.UCL, colour=trt), size=0.75)+
   scale_colour_manual(values = c("black", "navajowhite3", "lightsalmon4"), breaks=c("control", "moderate  sediment", "high sediment"))+
   scale_x_discrete(limits=c("control", "moderate  sediment", "high sediment"), 
                    labels=c("low sediment", "moderate sediment", "high sediment"))+
-  coord_flip()+
+  coord_flip() +
   theme_classic()+
   theme(legend.position = "none")+
   ylab("Re-emergence time (s)")+
   xlab("")+
-  geom_segment(aes(x = 1, xend = 3, y = 650, yend = 650), colour="black") +   # A vs B bracket
-  geom_text(aes(x = 2, y = 670, label = "*"), colour="black")
+  geom_bracket(
+    inherit.aes = FALSE,
+    xmin = "control",         # exact level name in your factor
+    xmax = "high sediment",   # exact level name in your factor
+    y.position = 650,
+    label = "",
+    tip.length = 0.01,
+    label.size = 3)+
+  annotate("text", x = 2, y = 680, label = "*", size = 4)
   
   
  p2 <-  ggplot(data=ev,aes(x=trt_comb, y=emerge_s, colour=trt_comb), position = position_dodge(width = 0.75))+
@@ -120,13 +127,16 @@ p1 <- ggplot(data=turb, aes(x=trt, y=emerge_s, colour=trt), )+
     ylab("Re-emergence time (s)")+
    xlab("")+
    theme(legend.position='none')+
-   geom_segment(aes(x = 1, xend = 4, y = 600, yend = 600), colour="black") + # A vs B bracket
-   
-   geom_text(aes(x = 2.5, y = 620, label = "*"), colour="black") +             # A vs B label
-   geom_segment(aes(x = 2, xend = 4, y = 550, yend = 550), colour="black") +   # A vs C bracket
-   geom_text(aes(x = 3, y = 570, label = "*"), colour="black") 
-
-
+   geom_bracket(
+     inherit.aes = FALSE,
+     xmin = c("WARMLIGHT", "WARMLIGHT"),        # exact level name in your factor
+     xmax = c("COLDDARK", "COLDLIGHT"),   # exact level name in your factor
+     y.position = c(600, 520),
+     label = "",
+     tip.length = 0.01,
+     label.size = 3)+
+   annotate("text", x = 2.5, y = 610, label = "*", size = 4)+
+   annotate("text", x = 3, y = 530, label = "*", size = 4)
 
 
 fig <- ( p2 / p1) + plot_annotation(tag_levels = "a")
