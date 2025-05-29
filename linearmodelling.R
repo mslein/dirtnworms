@@ -150,7 +150,7 @@ shapiro.test(sqrt(turb$tube_diameter_cm))
 #SI figures
 
 ps2 <- ggplot()+
-  geom_jitter(data=ev,aes(x=trt_comb, y=retract_s, colour=trt_comb), alpha=0.15, width=0.1)+
+  geom_jitter(data=ev,aes(x=trt_comb, y=retract_s, colour=trt_comb), alpha=0.15, position = position_jitter(width = 0, height = 0.1))+
   geom_pointrange(data=df3, aes(x=trt_comb, y=response, ymin=asymp.LCL, 
                                 ymax=asymp.UCL, colour=trt_comb), size=0.75)+
   scale_colour_manual(values=c("black", "darkgrey","red4", "tomato3"))+
